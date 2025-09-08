@@ -57,6 +57,8 @@
 			// in folders where they don't exist.  (Searching a VPK is much faster than making an operating
 			// system call.)
 			game+mod			|gameinfo_path|pak01.vpk
+			game+mod			|gameinfo_path|.
+			game+mod			csgo
 
 			// Now search loose files.  We'll set the directory containing the gameinfo.txt file
 			// as the first "mod" search path (after any user customizations).  This is also the one
