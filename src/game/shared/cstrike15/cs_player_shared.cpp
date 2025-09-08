@@ -2936,10 +2936,10 @@ AcquireResult::Type CCSPlayer::CanAcquire( CSWeaponID weaponId, AcquireMethod::T
 				return AcquireResult::AlreadyPurchased;
 		}
 
-		if ( weaponId == WEAPON_KNIFE || weaponId == WEAPON_KNIFE_GG )
+		/*if ( weaponId == WEAPON_KNIFE || weaponId == WEAPON_KNIFE_GG )
 		{ 
 			return AcquireResult::NotAllowedForPurchase; 
-		}
+		}*/
 
 		// Validate that each player can buy only so many instances of same weapon type
 		if ( mp_weapons_allow_typecount.GetInt() == 0 )

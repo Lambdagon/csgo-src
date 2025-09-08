@@ -155,7 +155,10 @@ void CCSAchievementAnnouncePanel::Hide()
 
 bool CCSAchievementAnnouncePanel::ShouldDraw( void )
 {
-	return (m_bShouldBeVisible && CHudElement::ShouldDraw());
+	//return (m_bShouldBeVisible && CHudElement::ShouldDraw());
+
+    // This is getting spammy
+    return false;
 }
 
 void CCSAchievementAnnouncePanel::Paint( void )

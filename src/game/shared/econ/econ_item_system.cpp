@@ -500,7 +500,7 @@ public:
 			bUseGCCopy = CommandLine()->FindParm( "-use_local_item_data" ) == 0;
 		}
 #else
-		bool bUseGCCopy = true;
+		bool bUseGCCopy = false;
 #endif
 
 		if ( bUseGCCopy == false )

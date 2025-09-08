@@ -627,6 +627,65 @@ void cc_CreatePredictionError_f( const CCommand &args )
 
 ConCommand cc_CreatePredictionError( "CreatePredictionError", cc_CreatePredictionError_f, "Create a prediction error", FCVAR_CHEAT );
 
+CON_COMMAND_F(give_econ, "Give ECON item with specified ID.\nFormat: <id> <classname>", FCVAR_CHEAT)
+{
+    if (args.ArgC() < 2)
+        return;
+
+    CCSPlayer* pPlayer = ToCSPlayer(UTIL_GetCommandClient());
+    if (!pPlayer)
+        return;
+
+    int iItemID = atoi(args[1]);
+    const CEconItemDefinition* pItemDef = GetItemSchema()->GetItemDefinition(iItemID);
+    if (!pItemDef)
+        return;
+
+    CEconItemView econItem;
+    econItem.Init(iItemID, AE_UNIQUE, AE_USE_SCRIPT_VALUE, true);
+
+    // Determine the slot of the new item
+    const char* szNewSlot = pItemDef->GetRawDefinition()->GetString("item_slot");
+
+    // Drop only weapons in the same slot
+    for (int i = 0; i < MAX_WEAPONS; i++)
+    {
+        CBaseCombatWeapon* pWeapon = pPlayer->GetWeapon(i);
+        if (!pWeapon)
+            continue;
+
+        const CEconItemView* pWeaponItem = pWeapon->GetEconItemView();
+        if (!pWeaponItem)
+            continue;
+
+        const char* szWeaponSlot = pWeaponItem->GetStaticData()->GetRawDefinition()->GetString("item_slot");
+        if (szWeaponSlot && szNewSlot && !V_stricmp(szWeaponSlot, szNewSlot))
+        {
+            pPlayer->Weapon_Drop(pWeapon, nullptr, nullptr);
+        }
+    }
+
+    // Use override classname if provided, else use schema default
+    const char* pszClassname = args.ArgC() > 2 ? args[2] : pItemDef->GetItemClass();
+
+    CEconEntity* pEconEnt = dynamic_cast<CEconEntity*>(pPlayer->GiveNamedItem(pszClassname, 0, &econItem));
+    if (pEconEnt)
+    {
+        pEconEnt->GiveTo(pPlayer);
+
+        if (CBaseCombatWeapon* pWeapon = pEconEnt->MyCombatWeaponPointer())
+        {
+            int iPrimaryAmmo = pWeapon->GetPrimaryAmmoType();
+            if (iPrimaryAmmo != -1)
+                pPlayer->GiveAmmo(pWeapon->GetMaxClip1(), iPrimaryAmmo);
+
+            int iSecondaryAmmo = pWeapon->GetSecondaryAmmoType();
+            if (iSecondaryAmmo != -1)
+                pPlayer->GiveAmmo(pWeapon->GetMaxClip2(), iSecondaryAmmo);
+        }
+    }
+}
+
 // -------------------------------------------------------------------------------- //
 // CCSPlayer implementation.
 // -------------------------------------------------------------------------------- //
@@ -11284,7 +11343,7 @@ bool CCSPlayer::Weapon_CanUse( CBaseCombatWeapon *pBaseWeapon )
 		if ( CanAcquire( pWeapon->GetCSWeaponID(), AcquireMethod::PickUp ) != AcquireResult::Allowed )
 			return false;
 
-		bool bAllowCustomKnifeSpawns = false;
+		bool bAllowCustomKnifeSpawns = true;
 
 		if ( !bAllowCustomKnifeSpawns && pWeapon->IsMeleeWeapon() && pWeapon->GetEconItemView() && 
 			 !( pWeapon->GetEconItemView()->GetItemDefinition()->IsDefaultSlotItem() || pWeapon->GetEconItemView()->GetItemID() != 0 || FClassnameIs( pWeapon, "weapon_knifegg" ) ) )
