@@ -1386,7 +1386,32 @@ void CCSPlayer::SetCSSpawnLocation( Vector position, QAngle angle )
 	m_storedSpawnPosition = position;
 	m_storedSpawnAngle = angle;
 }
+CON_COMMAND_F(set_spawn_knife, "Choose which knife to spawn with", FCVAR_ARCHIVE)
+{
+    CCSPlayer* pPlayer = ToCSPlayer(UTIL_GetCommandClient());
+    if (!pPlayer)
+        return;
 
+    if (args.ArgC() < 2)
+        return;
+
+    const char* knifeName = args[1];
+    int itemID = 42; // default knife
+
+    if		(FStrEq(knifeName, "default")) itemID = 42;	   
+    else if (FStrEq(knifeName, "bayonet")) itemID = 500;	   
+    else if (FStrEq(knifeName, "flip")) itemID = 505;
+    else if (FStrEq(knifeName, "gut")) itemID = 506;
+	else if (FStrEq(knifeName, "karambit")) itemID = 507;
+    else if (FStrEq(knifeName, "m9bayonet")) itemID = 508;
+    else if (FStrEq(knifeName, "tactical")) itemID = 509;
+    else if (FStrEq(knifeName, "falchion")) itemID = 512;
+    else if (FStrEq(knifeName, "bowie")) itemID = 514;
+    else if (FStrEq(knifeName, "butterfly")) itemID = 515;
+
+    pPlayer->m_iPreferredKnifeItemID = itemID;
+    DevMsg("Player %s set their spawn knife to %s (ID %d)\n", pPlayer->GetPlayerName(), knifeName, itemID);
+}
 void CCSPlayer::Spawn()
 {
 	m_RateLimitLastCommandTimes.Purge();
@@ -1852,6 +1877,26 @@ void CCSPlayer::Spawn()
 		m_bInvalidSteamLogonDelayed = false;
 		Warning( "Invalid Steam Logon Delayed: Kicking client [U:1:%d] %s\n", GetHumanPlayerAccountID(), GetPlayerName() );
 		engine->ServerCommand( UTIL_VarArgs( "kickid_ex %d %d No Steam logon\n", this->GetUserID(), /*bIsPlayingOffline*/ false ? 0 : 1 ) );
+	}
+
+	// Remove existing knife
+	CBaseCombatWeapon* knife = Weapon_GetSlot(WEAPON_SLOT_KNIFE);
+	if (knife)
+		DestroyWeapon(knife);
+
+	// Give the player’s preferred knife
+	int iItemID = m_iPreferredKnifeItemID;
+
+	const CEconItemDefinition* pItemDef = GetItemSchema()->GetItemDefinition(iItemID);
+	if (pItemDef)
+	{
+		CEconItemView econItem;
+		econItem.Init(iItemID, AE_UNIQUE, AE_USE_SCRIPT_VALUE, true);
+
+		const char* pszClassname = pItemDef->GetItemClass();
+		CEconEntity* pEconEnt = dynamic_cast<CEconEntity*>(GiveNamedItem(pszClassname, 0, &econItem));
+		if (pEconEnt)
+			pEconEnt->GiveTo(this);
 	}
 }
 

@@ -300,6 +300,10 @@ public:
 
 	void				SprayPaint( CCSUsrMsg_PlayerDecalDigitalSignature const &msg );
 
+	int GetPreferredKnifeID() const { return m_iPreferredKnifeItemID; }
+	void SetPreferredKnifeID(int iItemID) { m_iPreferredKnifeItemID = iItemID; }
+	int m_iPreferredKnifeItemID = 42; // default knife
+
 	class ITakeDamageListener
 	{
 	public:
