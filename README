@@ -1,4 +1,4 @@
-# Vvi's CSGO mod
+# Vvis' CSGO mod
 
 Features: 
 - Added give_econ command to allow giving any econ item found in items_game.txt
@@ -10,6 +10,20 @@ Features:
 Potentially planned:
 - Player model chooser?
 - Restore original spray system like tf2/hl2dm
+
+Requirements:
+To compile this mod you need visual studio 2015 (or the v140 build tools)
+To use this mod you need the csgo files via depotdownloader
+-app 730 -depot 731 -manifest 7043469183016184477 -username USERNAME -password PASSWORD
+-app 730 -depot 732 -manifest 4047004309608881181 -username USERNAME -password PASSWORD
+
+Setup:
+Once you have the files you need to copy them to the csgo-src\game folder 
+after that do a full compile of the main solution on RELEASE to get the DLLs 
+then just play the game via the exe after the compile is finished. 
+
+TODO: Use legacy csgo branch assets with gamemounter and precompiled DLLs instead 
+
 
 # Original Description
 This project is aimed to improve the leaked CS:GO code, to make it more stable and to make it playable.
