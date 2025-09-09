@@ -4,11 +4,11 @@ Features:
 - Added give_econ command to allow giving any econ item found in items_game.txt
 - Added the ability to use local items game
 - Removed the restriction on giving self custom knives (tested with econ item 515 butterfly knife)
-
+- Added the ability to choose what knife you can spawn with via `set_spawn_knife` command 
+  - Used like `set_spawn_knife butterfly` 
 
 Potentially planned:
 - Player model chooser?
-- Knife chooser
 - Restore original spray system like tf2/hl2dm
 
 # Original Description
