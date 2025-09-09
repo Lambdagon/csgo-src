@@ -1,3 +1,17 @@
+# Vvi's CSGO mod
+
+Features: 
+- Added give_econ command to allow giving any econ item found in items_game.txt
+- Added the ability to use local items game
+- Removed the restriction on giving self custom knives (tested with econ item 515 butterfly knife)
+
+
+Potentially planned:
+- Player model chooser?
+- Knife chooser
+- Restore original spray system like tf2/hl2dm
+
+# Original Description
 This project is aimed to improve the leaked CS:GO code, to make it more stable and to make it playable.
 Use resources from CS:S to get the HUD and GameUI to work properly.
 
